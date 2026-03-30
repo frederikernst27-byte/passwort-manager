@@ -6,8 +6,8 @@
   <title>VaultDesk</title>
   <style>
     :root {
-      --bg: #0b1020;
-      --panel: rgba(17, 24, 39, 0.92);
+      --bg: #08111f;
+      --panel: rgba(17, 24, 39, 0.9);
       --border: rgba(255,255,255,0.08);
       --text: #f8fafc;
       --muted: #94a3b8;
@@ -17,7 +17,6 @@
       --success: #34d399;
       --shadow: 0 18px 50px rgba(0,0,0,0.35);
     }
-
     * { box-sizing: border-box; }
     body {
       margin: 0;
@@ -30,10 +29,8 @@
       color: var(--text);
       padding: 18px;
     }
-
-    .shell { max-width: 1300px; margin: 0 auto; }
+    .shell { max-width: 1320px; margin: 0 auto; }
     .hidden { display: none !important; }
-
     .login-wrap, .app-wrap {
       background: var(--panel);
       border: 1px solid var(--border);
@@ -41,69 +38,33 @@
       box-shadow: var(--shadow);
       backdrop-filter: blur(16px);
     }
-
-    .login-wrap {
-      max-width: 460px;
-      margin: 8vh auto 0;
-      padding: 28px;
-    }
-
-    .brand {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      margin-bottom: 22px;
-    }
-
+    .login-wrap { max-width: 480px; margin: 8vh auto 0; padding: 28px; }
+    .brand { display: flex; gap: 14px; align-items: center; margin-bottom: 22px; }
     .brand-mark {
-      width: 56px;
-      height: 56px;
-      border-radius: 18px;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      font-size: 28px;
-      font-weight: 800;
-      color: #06111d;
+      width: 56px; height: 56px; border-radius: 18px; display: grid; place-items: center;
+      background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #06111d;
+      font-size: 28px; font-weight: 800;
     }
-
     h1, h2, h3, h4, p { margin: 0; }
     .sub { color: var(--muted); line-height: 1.6; margin-top: 8px; }
-
     .form { display: grid; gap: 14px; margin-top: 22px; }
     label { display: block; font-size: 0.9rem; color: var(--muted); margin-bottom: 8px; font-weight: 600; }
-
     input, textarea {
-      width: 100%;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.04);
-      color: var(--text);
-      border-radius: 16px;
-      padding: 13px 14px;
-      font: inherit;
-      outline: none;
+      width: 100%; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.04);
+      color: var(--text); border-radius: 16px; padding: 13px 14px; font: inherit; outline: none;
     }
-
     textarea { min-height: 90px; resize: vertical; }
     input:focus, textarea:focus {
-      border-color: rgba(96,165,250,0.8);
-      box-shadow: 0 0 0 4px rgba(96,165,250,0.12);
+      border-color: rgba(96,165,250,0.8); box-shadow: 0 0 0 4px rgba(96,165,250,0.12);
     }
-
     button {
-      border: none;
-      cursor: pointer;
-      font: inherit;
-      font-weight: 700;
-      border-radius: 16px;
-      padding: 13px 16px;
-      transition: 0.18s ease;
+      border: none; cursor: pointer; font: inherit; font-weight: 700; border-radius: 16px;
+      padding: 13px 16px; transition: 0.18s ease;
     }
-
+    button:hover { transform: translateY(-1px); }
     .btn-primary { color: #07111d; background: linear-gradient(135deg, var(--accent), var(--accent2)); }
     .btn-secondary { color: var(--text); background: rgba(255,255,255,0.05); border: 1px solid var(--border); }
     .btn-danger { color: white; background: rgba(251,113,133,0.18); border: 1px solid rgba(251,113,133,0.2); }
-
     .app-wrap { padding: 18px; }
     .topbar {
       display: flex; justify-content: space-between; align-items: center; gap: 12px;
@@ -115,115 +76,43 @@
     .panel-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
     .small { font-size: 0.9rem; color: var(--muted); }
     .list { display: grid; gap: 10px; }
-
     .card {
-      padding: 14px;
-      border-radius: 18px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.035);
-      display: grid;
-      gap: 10px;
+      padding: 14px; border-radius: 18px; border: 1px solid var(--border); background: rgba(255,255,255,0.035);
+      display: grid; gap: 10px;
     }
-
-    .card.active {
-      outline: 2px solid rgba(96,165,250,0.5);
-      background: rgba(96,165,250,0.09);
-    }
-
+    .card.active { outline: 2px solid rgba(96,165,250,0.5); background: rgba(96,165,250,0.09); }
     .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      background: rgba(255,255,255,0.04);
+      display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; font-size: 0.8rem;
+      border: 1px solid var(--border); color: var(--muted); background: rgba(255,255,255,0.04);
     }
-
     .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
     .space { justify-content: space-between; }
-
-    .entry-field {
-      display: grid;
-      gap: 6px;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
+    .entry-field { display: grid; gap: 6px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
     .entry-field:last-child { border-bottom: 0; padding-bottom: 0; }
-
-    .field-title {
-      font-size: 0.82rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-    }
-
+    .field-title { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
     .field-value { word-break: break-word; line-height: 1.6; }
-
-    .copy-btn, .share-btn { padding: 8px 10px; font-size: 0.85rem; position: relative; overflow: hidden; }
-    .copy-btn.copied {
-      background: linear-gradient(135deg, var(--success), #8cf0c3);
-      color: #04140d;
-      border-color: transparent;
-      animation: copiedPop .28s ease;
-    }
-    @keyframes copiedPop {
-      0% { transform: scale(0.92); }
-      60% { transform: scale(1.06); }
-      100% { transform: scale(1); }
-    }
-
-    .checkbox-list {
-      display: grid;
-      gap: 10px;
-      max-height: 220px;
-      overflow: auto;
-      padding-right: 4px;
-    }
-
+    .copy-btn, .share-btn { padding: 8px 10px; font-size: 0.85rem; }
+    .copy-btn.copied { background: linear-gradient(135deg, var(--success), #8cf0c3); color: #04140d; }
+    .checkbox-list { display: grid; gap: 10px; max-height: 220px; overflow: auto; padding-right: 4px; }
     .checkbox-item {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border);
+      display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: 14px;
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
     }
-
     .muted-box {
-      padding: 12px 14px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.03);
-      border: 1px dashed var(--border);
-      color: var(--muted);
-      line-height: 1.6;
-      font-size: 0.92rem;
+      padding: 12px 14px; border-radius: 16px; background: rgba(255,255,255,0.03); border: 1px dashed var(--border);
+      color: var(--muted); line-height: 1.6; font-size: 0.92rem;
     }
-
+    .notice { margin-top: 14px; min-height: 22px; }
+    .notice.error { color: var(--danger); }
+    .notice.ok { color: var(--success); }
     .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(2, 6, 23, 0.72);
-      backdrop-filter: blur(8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      z-index: 50;
+      position: fixed; inset: 0; background: rgba(2, 6, 23, 0.72); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center; padding: 18px; z-index: 50;
     }
-
     .modal {
-      width: min(560px, 100%);
-      background: #101729;
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 20px;
-      box-shadow: var(--shadow);
+      width: min(560px, 100%); background: #101729; border: 1px solid var(--border); border-radius: 24px;
+      padding: 20px; box-shadow: var(--shadow);
     }
-
     @media (max-width: 1120px) { .layout { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -234,23 +123,21 @@
         <div class="brand-mark">🔐</div>
         <div>
           <h1>VaultDesk</h1>
-          <p class="sub">Passwort- und Account-Freigaben verwalten</p>
+          <p class="sub">Passwort- und Account-Freigaben mit Server-API, Session-Cookies und DB</p>
         </div>
       </div>
-
-      <p class="sub">Als Admin kannst du Kundenkonten anlegen, Einträge erstellen und später separat freigeben. Kunden sehen danach nur die Einträge, die du ihnen zuweist.</p>
-
+      <p class="sub">Admins können Kunden anlegen, Einträge speichern und separat freigeben. Kunden sehen nur serverseitig autorisierte Zugänge.</p>
       <div class="form">
         <div>
           <label>Benutzername</label>
-          <input id="loginUsername" placeholder="z. B. admin oder kundenname" />
+          <input id="loginUsername" autocomplete="username" />
         </div>
         <div>
           <label>Passwort</label>
-          <input id="loginPassword" type="password" placeholder="Passwort eingeben" />
+          <input id="loginPassword" type="password" autocomplete="current-password" />
         </div>
         <button class="btn-primary" id="loginBtn">Anmelden</button>
-        <div id="loginMessage" class="small"></div>
+        <div id="loginMessage" class="notice"></div>
       </div>
     </section>
 
@@ -262,6 +149,7 @@
         </div>
         <div class="topbar-actions">
           <span id="roleBadge" class="pill"></span>
+          <button class="btn-secondary" id="reloadBtn">Neu laden</button>
           <button class="btn-secondary" id="logoutBtn">Logout</button>
         </div>
       </div>
@@ -271,15 +159,16 @@
           <div class="panel-header">
             <div>
               <h3>Zugänge</h3>
-              <p class="small">Einträge, die für dieses Konto sichtbar sind</p>
+              <p class="small">Sichtbar gemäß serverseitiger Rechteprüfung</p>
             </div>
           </div>
           <div id="entryList" class="list"></div>
         </aside>
 
         <main class="panel">
-          <div id="entryDetailEmpty" class="muted-box">Wähle links einen Eintrag aus, um Passwort, Benutzername, E-Mail und Infos zu sehen.</div>
+          <div id="entryDetailEmpty" class="muted-box">Wähle links einen Eintrag aus, um Details zu sehen.</div>
           <div id="entryDetail" class="hidden"></div>
+          <div id="appMessage" class="notice"></div>
         </main>
 
         <aside class="panel" id="adminPanel">
@@ -287,7 +176,7 @@
             <div class="panel-header">
               <div>
                 <h3>Admin Bereich</h3>
-                <p class="small">Kunden anlegen, Einträge erstellen und Freigaben später separat verwalten</p>
+                <p class="small">Kunden, Einträge und Freigaben werden über die API gespeichert.</p>
               </div>
             </div>
 
@@ -295,15 +184,15 @@
               <h4>Kundenkonto erstellen</h4>
               <div>
                 <label>Name / Anzeige</label>
-                <input id="customerName" placeholder="z. B. Max Mustermann" />
+                <input id="customerName" />
               </div>
               <div>
                 <label>Benutzername</label>
-                <input id="customerUsername" placeholder="z. B. max01" />
+                <input id="customerUsername" autocomplete="off" />
               </div>
               <div>
                 <label>Passwort</label>
-                <input id="customerPassword" placeholder="Passwort für den Kunden" />
+                <input id="customerPassword" type="password" autocomplete="new-password" />
               </div>
               <button class="btn-primary" id="createCustomerBtn">Konto erstellen</button>
             </div>
@@ -314,19 +203,19 @@
               <h4>Eintrag erstellen</h4>
               <div>
                 <label>Titel</label>
-                <input id="entryTitleInput" placeholder="z. B. Netflix Familie" />
+                <input id="entryTitleInput" />
               </div>
               <div>
                 <label>E-Mail oder Benutzername</label>
-                <input id="entryUsernameInput" placeholder="login@beispiel.de oder username" />
+                <input id="entryUsernameInput" />
               </div>
               <div>
                 <label>Passwort</label>
-                <input id="entryPasswordInput" placeholder="Passwort" />
+                <input id="entryPasswordInput" type="password" />
               </div>
               <div>
-                <label>Kleiner Info-Text</label>
-                <textarea id="entryInfoInput" placeholder="z. B. nur im Browser nutzen, 2FA im Handy etc."></textarea>
+                <label>Info</label>
+                <textarea id="entryInfoInput"></textarea>
               </div>
               <button class="btn-primary" id="createEntryBtn">Eintrag speichern</button>
             </div>
@@ -340,7 +229,7 @@
           </div>
 
           <div id="userInfoBox" class="muted-box hidden">
-            Du bist als Kunde angemeldet. Du siehst nur Einträge, die dir vom Admin freigegeben wurden.
+            Du bist als Kunde angemeldet. Die API liefert nur Einträge, die dir freigegeben wurden.
           </div>
         </aside>
       </div>
@@ -352,7 +241,7 @@
       <div class="panel-header">
         <div>
           <h3>Freigeben</h3>
-          <p class="small">Wähle aus, für welche Kunden dieser Eintrag sichtbar sein soll.</p>
+          <p class="small">Wähle Kunden für diesen Eintrag aus.</p>
         </div>
         <button class="btn-secondary" id="closeShareModal">Schließen</button>
       </div>
@@ -364,47 +253,48 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'vaultdesk-data-v2';
-    const ADMIN_DEFAULT = {
-      id: 'admin-1',
-      username: 'admin',
-      displayName: 'Frederik (Admin)',
-      password: 'frederikerns720',
-      role: 'admin'
+    const state = {
+      user: null,
+      entries: [],
+      customers: [],
+      selectedEntryId: null,
+      shareTargetEntryId: null
     };
 
-    let state = loadState();
-    let currentUser = null;
-    let selectedEntryId = null;
-    let shareTargetEntryId = null;
-
-    function loadState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('vaultdesk-data-v1');
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (parsed && Array.isArray(parsed.users) && Array.isArray(parsed.entries)) {
-            if (!parsed.users.some((u) => u.role === 'admin')) parsed.users.unshift(ADMIN_DEFAULT);
-            parsed.entries = parsed.entries.map((entry) => ({ ...entry, sharedWith: Array.isArray(entry.sharedWith) ? entry.sharedWith : [] }));
-            return parsed;
-          }
-        }
-      } catch {}
-      return { users: [ADMIN_DEFAULT], entries: [] };
+    async function api(path, options = {}) {
+      const response = await fetch(path, {
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+        ...options
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || 'Anfrage fehlgeschlagen.');
+      return data;
     }
 
-    function saveState() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    function setNotice(targetId, text, type = '') {
+      const el = document.getElementById(targetId);
+      el.textContent = text || '';
+      el.className = `notice ${type}`.trim();
     }
 
-    function getCustomers() {
-      return state.users.filter((user) => user.role === 'customer');
+    function escapeHtml(value) {
+      return String(value || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function getVisibleEntries() {
+      return state.entries;
     }
 
     function render() {
       const loginView = document.getElementById('loginView');
       const appView = document.getElementById('appView');
-      if (!currentUser) {
+      if (!state.user) {
         loginView.classList.remove('hidden');
         appView.classList.add('hidden');
         return;
@@ -412,25 +302,17 @@
 
       loginView.classList.add('hidden');
       appView.classList.remove('hidden');
-      document.getElementById('welcomeTitle').textContent = `Hallo ${currentUser.displayName}`;
-      document.getElementById('welcomeSub').textContent = currentUser.role === 'admin'
-        ? 'Du kannst Kunden, Einträge und Freigaben getrennt verwalten.'
-        : 'Hier findest du alle Zugangsdaten, die dir freigegeben wurden.';
-      document.getElementById('roleBadge').textContent = currentUser.role === 'admin' ? 'Admin' : 'Kunde';
-
-      const isAdmin = currentUser.role === 'admin';
+      document.getElementById('welcomeTitle').textContent = `Hallo ${state.user.displayName}`;
+      document.getElementById('welcomeSub').textContent = state.user.role === 'admin'
+        ? 'Du kannst Kunden, Einträge und Freigaben serverseitig verwalten.'
+        : 'Hier findest du alle Zugänge, die dir freigegeben wurden.';
+      document.getElementById('roleBadge').textContent = state.user.role === 'admin' ? 'Admin' : 'Kunde';
+      const isAdmin = state.user.role === 'admin';
       document.getElementById('adminContent').classList.toggle('hidden', !isAdmin);
       document.getElementById('userInfoBox').classList.toggle('hidden', isAdmin);
-
       renderEntryList();
       renderEntryDetail();
       if (isAdmin) renderCustomerList();
-    }
-
-    function getVisibleEntries() {
-      if (!currentUser) return [];
-      if (currentUser.role === 'admin') return state.entries;
-      return state.entries.filter((entry) => (entry.sharedWith || []).includes(currentUser.id));
     }
 
     function renderEntryList() {
@@ -438,33 +320,32 @@
       const entries = getVisibleEntries();
       if (!entries.length) {
         container.innerHTML = '<div class="muted-box">Noch keine Einträge sichtbar.</div>';
-        selectedEntryId = null;
+        state.selectedEntryId = null;
         return;
       }
-      if (!entries.some((entry) => entry.id === selectedEntryId)) selectedEntryId = entries[0].id;
+      if (!entries.some((entry) => entry.id === state.selectedEntryId)) state.selectedEntryId = entries[0].id;
       container.innerHTML = entries.map((entry) => `
-        <button class="card ${selectedEntryId === entry.id ? 'active' : ''}" onclick="selectEntry('${entry.id}')">
+        <button class="card ${state.selectedEntryId === entry.id ? 'active' : ''}" onclick="selectEntry('${entry.id}')">
           <div class="row space">
             <strong style="text-align:left;">${escapeHtml(entry.title)}</strong>
             <span class="pill">${(entry.sharedWith || []).length} Freigaben</span>
           </div>
-          <div class="small" style="text-align:left;">${escapeHtml(entry.usernameOrEmail || 'Kein Login hinterlegt')}</div>
-          <div class="small" style="text-align:left;">${escapeHtml((entry.info || '').slice(0, 80) || 'Keine Zusatzinfos')}</div>
+          <div class="small" style="text-align:left;">${escapeHtml(entry.usernameOrEmail || 'Kein Login')}</div>
+          <div class="small" style="text-align:left;">${escapeHtml((entry.info || '').slice(0, 90) || 'Keine Zusatzinfos')}</div>
         </button>
       `).join('');
     }
 
     function renderEntryDetail() {
+      const entry = getVisibleEntries().find((item) => item.id === state.selectedEntryId);
       const empty = document.getElementById('entryDetailEmpty');
       const detail = document.getElementById('entryDetail');
-      const entry = getVisibleEntries().find((item) => item.id === selectedEntryId);
       if (!entry) {
         empty.classList.remove('hidden');
         detail.classList.add('hidden');
         detail.innerHTML = '';
         return;
       }
-
       empty.classList.add('hidden');
       detail.classList.remove('hidden');
       detail.innerHTML = `
@@ -473,17 +354,15 @@
             <h3>${escapeHtml(entry.title)}</h3>
             <p class="small">Freigegeben für ${(entry.sharedWith || []).length} Konto/Konten</p>
           </div>
-          ${currentUser.role === 'admin' ? `
+          ${state.user.role === 'admin' ? `
             <div class="row">
               <button class="btn-secondary share-btn" onclick="openShareModal('${entry.id}')">Freigeben</button>
               <button class="btn-danger" onclick="deleteEntry('${entry.id}')">Eintrag löschen</button>
             </div>
           ` : ''}
         </div>
-
         ${renderCopyField('Benutzername / E-Mail', entry.usernameOrEmail || '', 'Nicht hinterlegt')}
         ${renderCopyField('Passwort', entry.password || '', 'Nicht hinterlegt')}
-
         <div class="entry-field">
           <div class="field-title">Info</div>
           <div class="field-value">${escapeHtml(entry.info || 'Keine Zusatzinfos')}</div>
@@ -499,7 +378,7 @@
           <div class="field-title">${label}</div>
           <div class="row space">
             <div class="field-value">${safeValue}</div>
-            <button class="btn-secondary copy-btn" onclick="copyValue(${rawValue}, this)">Kopieren</button>
+            <button class="btn-secondary copy-btn" onclick='copyValue(${rawValue}, this)'>Kopieren</button>
           </div>
         </div>
       `;
@@ -507,38 +386,61 @@
 
     function renderCustomerList() {
       const container = document.getElementById('customerList');
-      const customers = getCustomers();
-      if (!customers.length) {
+      if (!state.customers.length) {
         container.innerHTML = '<div class="muted-box">Noch keine Kundenkonten angelegt.</div>';
         return;
       }
-      container.innerHTML = customers.map((customer) => {
-        const visibleCount = state.entries.filter((entry) => (entry.sharedWith || []).includes(customer.id)).length;
-        return `
-          <div class="card">
-            <div class="row space">
-              <div>
-                <strong>${escapeHtml(customer.displayName)}</strong>
-                <div class="small">Login: ${escapeHtml(customer.username)}</div>
-              </div>
-              <button class="btn-danger" onclick="deleteCustomer('${customer.id}')">Löschen</button>
+      container.innerHTML = state.customers.map((customer) => `
+        <div class="card">
+          <div class="row space">
+            <div>
+              <strong>${escapeHtml(customer.displayName)}</strong>
+              <div class="small">Login: ${escapeHtml(customer.username)}</div>
             </div>
-            <div class="small">Freigegebene Einträge: ${visibleCount}</div>
-            <div class="small">Passwort: ${escapeHtml(customer.password)}</div>
+            <button class="btn-danger" onclick="deleteCustomer('${customer.id}')">Löschen</button>
           </div>
-        `;
-      }).join('');
+          <div class="small">Freigegebene Einträge: ${customer.sharedCount || 0}</div>
+        </div>
+      `).join('');
+    }
+
+    function selectEntry(id) {
+      state.selectedEntryId = id;
+      renderEntryList();
+      renderEntryDetail();
+    }
+
+    async function copyValue(value, button) {
+      const text = String(value || '');
+      if (!text) return animateCopyButton(button, false, 'Leer');
+      try {
+        await navigator.clipboard.writeText(text);
+        animateCopyButton(button, true, 'Kopiert ✓');
+      } catch {
+        animateCopyButton(button, false, 'Fehler');
+      }
+    }
+
+    function animateCopyButton(button, ok, label) {
+      const original = button.dataset.originalLabel || button.textContent;
+      button.dataset.originalLabel = original;
+      button.textContent = label;
+      button.classList.toggle('copied', !!ok);
+      clearTimeout(button._copyTimer);
+      button._copyTimer = setTimeout(() => {
+        button.textContent = original;
+        button.classList.remove('copied');
+      }, 1400);
     }
 
     function openShareModal(entryId) {
-      shareTargetEntryId = entryId;
+      state.shareTargetEntryId = entryId;
       const entry = state.entries.find((item) => item.id === entryId);
-      const customers = getCustomers();
       const list = document.getElementById('shareModalList');
-      if (!customers.length) {
-        list.innerHTML = '<div class="muted-box">Du hast noch keine Kunden angelegt.</div>';
+      if (!state.customers.length) {
+        list.innerHTML = '<div class="muted-box">Noch keine Kunden vorhanden.</div>';
       } else {
-        list.innerHTML = customers.map((customer) => `
+        list.innerHTML = state.customers.map((customer) => `
           <label class="checkbox-item">
             <input type="checkbox" value="${customer.id}" ${(entry.sharedWith || []).includes(customer.id) ? 'checked' : ''} />
             <div>
@@ -552,177 +454,151 @@
     }
 
     function closeShareModal() {
-      shareTargetEntryId = null;
+      state.shareTargetEntryId = null;
       document.getElementById('shareModal').classList.add('hidden');
     }
 
-    function saveShareModal() {
-      if (!shareTargetEntryId) return;
-      const entry = state.entries.find((item) => item.id === shareTargetEntryId);
-      if (!entry) return;
-      entry.sharedWith = Array.from(document.querySelectorAll('#shareModalList input[type="checkbox"]:checked')).map((cb) => cb.value);
-      saveState();
-      closeShareModal();
-      render();
-    }
-
-    function login() {
-      const username = document.getElementById('loginUsername').value.trim();
-      const password = document.getElementById('loginPassword').value;
-      const match = state.users.find((user) => user.username === username && user.password === password);
-      const message = document.getElementById('loginMessage');
-      if (!match) {
-        message.textContent = 'Login fehlgeschlagen. Prüfe Benutzername und Passwort.';
-        message.style.color = 'var(--danger)';
-        return;
-      }
-      currentUser = match;
-      selectedEntryId = null;
-      document.getElementById('loginPassword').value = '';
-      message.textContent = '';
-      render();
-    }
-
-    function logout() {
-      currentUser = null;
-      selectedEntryId = null;
-      render();
-    }
-
-    function createCustomer() {
-      const displayName = document.getElementById('customerName').value.trim();
-      const username = document.getElementById('customerUsername').value.trim();
-      const password = document.getElementById('customerPassword').value.trim();
-      if (!displayName || !username || !password) {
-        alert('Bitte Name, Benutzername und Passwort angeben.');
-        return;
-      }
-      if (state.users.some((user) => user.username === username)) {
-        alert('Dieser Benutzername existiert bereits.');
-        return;
-      }
-      state.users.push({ id: crypto.randomUUID(), displayName, username, password, role: 'customer' });
-      saveState();
-      document.getElementById('customerName').value = '';
-      document.getElementById('customerUsername').value = '';
-      document.getElementById('customerPassword').value = '';
-      render();
-    }
-
-    function createEntry() {
-      const title = document.getElementById('entryTitleInput').value.trim();
-      const usernameOrEmail = document.getElementById('entryUsernameInput').value.trim();
-      const password = document.getElementById('entryPasswordInput').value.trim();
-      const info = document.getElementById('entryInfoInput').value.trim();
-      if (!title || !password) {
-        alert('Bitte mindestens Titel und Passwort angeben.');
-        return;
-      }
-      const entry = { id: crypto.randomUUID(), title, usernameOrEmail, password, info, sharedWith: [] };
-      state.entries.unshift(entry);
-      saveState();
-      document.getElementById('entryTitleInput').value = '';
-      document.getElementById('entryUsernameInput').value = '';
-      document.getElementById('entryPasswordInput').value = '';
-      document.getElementById('entryInfoInput').value = '';
-      selectedEntryId = entry.id;
-      render();
-    }
-
-    function deleteEntry(id) {
-      if (!confirm('Eintrag wirklich löschen?')) return;
-      state.entries = state.entries.filter((entry) => entry.id !== id);
-      saveState();
-      if (selectedEntryId === id) selectedEntryId = null;
-      render();
-    }
-
-    function deleteCustomer(id) {
-      if (!confirm('Kundenkonto wirklich löschen?')) return;
-      state.users = state.users.filter((user) => user.id !== id);
-      state.entries = state.entries.map((entry) => ({ ...entry, sharedWith: (entry.sharedWith || []).filter((userId) => userId !== id) }));
-      saveState();
-      render();
-    }
-
-    function selectEntry(id) {
-      selectedEntryId = id;
-      renderEntryList();
-      renderEntryDetail();
-    }
-
-    async function copyValue(value, button) {
-      const text = String(value || '');
-      if (!text) {
-        animateCopyButton(button, false, 'Leer');
-        return;
-      }
+    async function saveShareModal() {
+      if (!state.shareTargetEntryId) return;
+      const userIds = Array.from(document.querySelectorAll('#shareModalList input:checked')).map((cb) => cb.value);
       try {
-        let copied = false;
-        if (navigator.clipboard && window.isSecureContext) {
-          await navigator.clipboard.writeText(text);
-          copied = true;
-        }
-        if (!copied) {
-          const area = document.createElement('textarea');
-          area.value = text;
-          area.setAttribute('readonly', '');
-          area.style.position = 'fixed';
-          area.style.opacity = '0';
-          area.style.left = '-9999px';
-          document.body.appendChild(area);
-          area.focus();
-          area.select();
-          copied = document.execCommand('copy');
-          document.body.removeChild(area);
-        }
-        if (!copied) throw new Error('copy failed');
-        animateCopyButton(button, true, 'Kopiert ✓');
-      } catch {
-        animateCopyButton(button, false, 'Fehler');
+        await api(`/api/entries/${state.shareTargetEntryId}/shares`, {
+          method: 'POST',
+          body: JSON.stringify({ userIds })
+        });
+        closeShareModal();
+        await loadAppData();
+        setNotice('appMessage', 'Freigaben gespeichert.', 'ok');
+      } catch (error) {
+        setNotice('appMessage', error.message, 'error');
       }
     }
 
-    function animateCopyButton(button, ok, label) {
-      if (!button) return;
-      const original = button.dataset.originalLabel || button.textContent;
-      button.dataset.originalLabel = original;
-      button.textContent = label;
-      button.classList.toggle('copied', !!ok);
-      if (!ok) button.style.opacity = '0.8';
-      clearTimeout(button._copyTimer);
-      button._copyTimer = setTimeout(() => {
-        button.textContent = original;
-        button.classList.remove('copied');
-        button.style.opacity = '';
-      }, 1400);
+    async function login() {
+      setNotice('loginMessage', '');
+      try {
+        const username = document.getElementById('loginUsername').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const data = await api('/api/login', { method: 'POST', body: JSON.stringify({ username, password }) });
+        state.user = data.user;
+        document.getElementById('loginPassword').value = '';
+        await loadAppData();
+        render();
+      } catch (error) {
+        setNotice('loginMessage', error.message, 'error');
+      }
     }
 
-    function escapeHtml(value) {
-      return String(value || '')
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
+    async function logout() {
+      try { await api('/api/logout', { method: 'POST' }); } catch {}
+      state.user = null;
+      state.entries = [];
+      state.customers = [];
+      state.selectedEntryId = null;
+      render();
+    }
+
+    async function loadAppData() {
+      const [entriesData, customersData] = await Promise.all([
+        api('/api/entries'),
+        state.user.role === 'admin' ? api('/api/customers') : Promise.resolve({ customers: [] })
+      ]);
+      state.entries = entriesData.entries;
+      state.customers = customersData.customers;
+      if (!state.entries.some((entry) => entry.id === state.selectedEntryId)) {
+        state.selectedEntryId = state.entries[0]?.id || null;
+      }
+      render();
+    }
+
+    async function bootstrapSession() {
+      try {
+        const data = await api('/api/session');
+        state.user = data.user;
+        if (state.user) await loadAppData();
+      } catch (error) {
+        setNotice('loginMessage', error.message, 'error');
+      }
+      render();
+    }
+
+    async function createCustomer() {
+      try {
+        const payload = {
+          displayName: document.getElementById('customerName').value.trim(),
+          username: document.getElementById('customerUsername').value.trim(),
+          password: document.getElementById('customerPassword').value
+        };
+        await api('/api/customers', { method: 'POST', body: JSON.stringify(payload) });
+        document.getElementById('customerName').value = '';
+        document.getElementById('customerUsername').value = '';
+        document.getElementById('customerPassword').value = '';
+        await loadAppData();
+        setNotice('appMessage', 'Kundenkonto erstellt.', 'ok');
+      } catch (error) {
+        setNotice('appMessage', error.message, 'error');
+      }
+    }
+
+    async function createEntry() {
+      try {
+        const payload = {
+          title: document.getElementById('entryTitleInput').value.trim(),
+          usernameOrEmail: document.getElementById('entryUsernameInput').value.trim(),
+          password: document.getElementById('entryPasswordInput').value,
+          info: document.getElementById('entryInfoInput').value.trim()
+        };
+        await api('/api/entries', { method: 'POST', body: JSON.stringify(payload) });
+        document.getElementById('entryTitleInput').value = '';
+        document.getElementById('entryUsernameInput').value = '';
+        document.getElementById('entryPasswordInput').value = '';
+        document.getElementById('entryInfoInput').value = '';
+        await loadAppData();
+        setNotice('appMessage', 'Eintrag gespeichert.', 'ok');
+      } catch (error) {
+        setNotice('appMessage', error.message, 'error');
+      }
+    }
+
+    async function deleteEntry(id) {
+      if (!confirm('Eintrag wirklich löschen?')) return;
+      try {
+        await api(`/api/entries/${id}`, { method: 'DELETE' });
+        await loadAppData();
+        setNotice('appMessage', 'Eintrag gelöscht.', 'ok');
+      } catch (error) {
+        setNotice('appMessage', error.message, 'error');
+      }
+    }
+
+    async function deleteCustomer(id) {
+      if (!confirm('Kundenkonto wirklich löschen?')) return;
+      try {
+        await api(`/api/customers/${id}`, { method: 'DELETE' });
+        await loadAppData();
+        setNotice('appMessage', 'Kundenkonto gelöscht.', 'ok');
+      } catch (error) {
+        setNotice('appMessage', error.message, 'error');
+      }
     }
 
     document.getElementById('loginBtn').addEventListener('click', login);
     document.getElementById('logoutBtn').addEventListener('click', logout);
+    document.getElementById('reloadBtn').addEventListener('click', loadAppData);
     document.getElementById('createCustomerBtn').addEventListener('click', createCustomer);
     document.getElementById('createEntryBtn').addEventListener('click', createEntry);
-    document.getElementById('loginUsername').addEventListener('keydown', (event) => { if (event.key === 'Enter') login(); });
-    document.getElementById('loginPassword').addEventListener('keydown', (event) => { if (event.key === 'Enter') login(); });
     document.getElementById('closeShareModal').addEventListener('click', closeShareModal);
     document.getElementById('saveShareBtn').addEventListener('click', saveShareModal);
+    document.getElementById('loginUsername').addEventListener('keydown', (event) => { if (event.key === 'Enter') login(); });
+    document.getElementById('loginPassword').addEventListener('keydown', (event) => { if (event.key === 'Enter') login(); });
 
     window.selectEntry = selectEntry;
     window.copyValue = copyValue;
+    window.openShareModal = openShareModal;
     window.deleteEntry = deleteEntry;
     window.deleteCustomer = deleteCustomer;
-    window.openShareModal = openShareModal;
 
-    render();
+    bootstrapSession();
   </script>
 </body>
 </html>
