@@ -45,6 +45,8 @@ Die App akzeptiert jetzt:
 
 In Supabase ein neues Projekt anlegen.
 
+Wenn du Journal und GymOS schon auf Supabase laufen hast, kannst du **dasselbe Projekt weiterverwenden**. Der Passwort-Manager nutzt einfach zusätzliche PostgreSQL-Tabellen im gleichen Projekt.
+
 ### 2) Datenbank-Connection-String holen
 
 In Supabase unter:
@@ -115,7 +117,7 @@ npm run dev
 
 ## Deployment-Checkliste
 
-1. Supabase-Projekt anlegen
+1. Supabase-Projekt anlegen oder vorhandenes Journal/GymOS-Projekt weiterverwenden
 2. `supabase.sql` ausführen
 3. Vercel ENV setzen
 4. deployen
