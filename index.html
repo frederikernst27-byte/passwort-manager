@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VaultDesk</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --bg2: #101729;
+      --panel: rgba(17, 24, 39, 0.92);
+      --border: rgba(255,255,255,0.08);
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #60a5fa;
+      --accent2: #a78bfa;
+      --danger: #fb7185;
+      --success: #34d399;
+      --radius: 20px;
+      --shadow: 0 18px 50px rgba(0,0,0,0.35);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(96,165,250,0.18), transparent 24%),
+        radial-gradient(circle at top right, rgba(167,139,250,0.16), transparent 22%),
+        linear-gradient(180deg, #09101d, #0b1020 100%);
+      color: var(--text);
+      padding: 18px;
+    }
+
+    .shell {
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    .hidden { display: none !important; }
+
+    .login-wrap, .app-wrap {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .login-wrap {
+      max-width: 460px;
+      margin: 8vh auto 0;
+      padding: 28px;
+    }
+
+    .brand {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 22px;
+    }
+
+    .brand-mark {
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      font-size: 28px;
+      font-weight: 800;
+      color: #06111d;
+    }
+
+    h1, h2, h3, h4, p { margin: 0; }
+    .sub { color: var(--muted); line-height: 1.6; margin-top: 8px; }
+
+    .form {
+      display: grid;
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      border-radius: 16px;
+      padding: 13px 14px;
+      font: inherit;
+      outline: none;
+    }
+
+    textarea { min-height: 90px; resize: vertical; }
+    input:focus, textarea:focus, select:focus {
+      border-color: rgba(96,165,250,0.8);
+      box-shadow: 0 0 0 4px rgba(96,165,250,0.12);
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+      border-radius: 16px;
+      padding: 13px 16px;
+      transition: 0.18s ease;
+    }
+
+    .btn-primary {
+      color: #07111d;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+    }
+
+    .btn-secondary {
+      color: var(--text);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+    }
+
+    .btn-danger {
+      color: white;
+      background: rgba(251,113,133,0.18);
+      border: 1px solid rgba(251,113,133,0.2);
+    }
+
+    .btn-success {
+      color: #04110d;
+      background: var(--success);
+    }
+
+    .app-wrap {
+      padding: 18px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 6px 18px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 320px 1fr 360px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 18px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .small { font-size: 0.9rem; color: var(--muted); }
+
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .card {
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.035);
+      display: grid;
+      gap: 10px;
+    }
+
+    .card.active {
+      outline: 2px solid rgba(96,165,250,0.5);
+      background: rgba(96,165,250,0.09);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .space {
+      justify-content: space-between;
+    }
+
+    .entry-field {
+      display: grid;
+      gap: 6px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .entry-field:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .field-title {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .field-value {
+      word-break: break-word;
+      line-height: 1.6;
+    }
+
+    .copy-btn {
+      padding: 8px 10px;
+      font-size: 0.85rem;
+    }
+
+    .checkbox-list {
+      display: grid;
+      gap: 10px;
+      max-height: 220px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+    }
+
+    .muted-box {
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px dashed var(--border);
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 1120px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section id="loginView" class="login-wrap">
+      <div class="brand">
+        <div class="brand-mark">🔐</div>
+        <div>
+          <h1>VaultDesk</h1>
+          <p class="sub">Passwort- und Account-Freigaben verwalten</p>
+        </div>
+      </div>
+
+      <p class="sub">Als Admin kannst du Kundenkonten anlegen, Einträge erstellen und gezielt freigeben. Kunden sehen danach nur die Einträge, die du ihnen zuweist.</p>
+
+      <div class="form">
+        <div>
+          <label>Benutzername</label>
+          <input id="loginUsername" placeholder="z. B. admin oder kundenname" />
+        </div>
+        <div>
+          <label>Passwort</label>
+          <input id="loginPassword" type="password" placeholder="Passwort eingeben" />
+        </div>
+        <button class="btn-primary" id="loginBtn">Anmelden</button>
+        <div id="loginMessage" class="small"></div>
+      </div>
+    </section>
+
+    <section id="appView" class="app-wrap hidden">
+      <div class="topbar">
+        <div>
+          <h2 id="welcomeTitle">VaultDesk</h2>
+          <p id="welcomeSub" class="small"></p>
+        </div>
+        <div class="topbar-actions">
+          <span id="roleBadge" class="pill"></span>
+          <button class="btn-secondary" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+
+      <div class="layout">
+        <aside class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Zugänge</h3>
+              <p class="small">Einträge, die für dieses Konto sichtbar sind</p>
+            </div>
+          </div>
+          <div id="entryList" class="list"></div>
+        </aside>
+
+        <main class="panel">
+          <div id="entryDetailEmpty" class="muted-box">Wähle links einen Eintrag aus, um Passwort, Benutzername, E-Mail und Infos zu sehen.</div>
+          <div id="entryDetail" class="hidden"></div>
+        </main>
+
+        <aside class="panel" id="adminPanel">
+          <div id="adminContent" class="hidden">
+            <div class="panel-header">
+              <div>
+                <h3>Admin Bereich</h3>
+                <p class="small">Kunden anlegen, Einträge erstellen und Freigaben steuern</p>
+              </div>
+            </div>
+
+            <div class="form">
+              <h4>Kundenkonto erstellen</h4>
+              <div>
+                <label>Name / Anzeige</label>
+                <input id="customerName" placeholder="z. B. Max Mustermann" />
+              </div>
+              <div>
+                <label>Benutzername</label>
+                <input id="customerUsername" placeholder="z. B. max01" />
+              </div>
+              <div>
+                <label>Passwort</label>
+                <input id="customerPassword" placeholder="Passwort für den Kunden" />
+              </div>
+              <button class="btn-primary" id="createCustomerBtn">Konto erstellen</button>
+            </div>
+
+            <hr style="border:none;border-top:1px solid var(--border);margin:22px 0;">
+
+            <div class="form">
+              <h4>Eintrag erstellen</h4>
+              <div>
+                <label>Titel</label>
+                <input id="entryTitleInput" placeholder="z. B. Netflix Familie" />
+              </div>
+              <div>
+                <label>E-Mail oder Benutzername</label>
+                <input id="entryUsernameInput" placeholder="login@beispiel.de oder username" />
+              </div>
+              <div>
+                <label>Passwort</label>
+                <input id="entryPasswordInput" placeholder="Passwort" />
+              </div>
+              <div>
+                <label>Kleiner Info-Text</label>
+                <textarea id="entryInfoInput" placeholder="z. B. nur im Browser nutzen, 2FA im Handy etc."></textarea>
+              </div>
+              <div>
+                <label>Für welche Konten sichtbar?</label>
+                <div id="customerAccessList" class="checkbox-list"></div>
+              </div>
+              <button class="btn-primary" id="createEntryBtn">Eintrag speichern</button>
+            </div>
+
+            <hr style="border:none;border-top:1px solid var(--border);margin:22px 0;">
+
+            <div class="form">
+              <h4>Kunden verwalten</h4>
+              <div id="customerList" class="list"></div>
+            </div>
+          </div>
+
+          <div id="userInfoBox" class="muted-box hidden">
+            Du bist als Kunde angemeldet. Du siehst nur Einträge, die dir vom Admin freigegeben wurden.
+          </div>
+        </aside>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'vaultdesk-data-v1';
+    const ADMIN_DEFAULT = {
+      id: 'admin-1',
+      username: 'admin',
+      displayName: 'Frederik (Admin)',
+      password: 'frederikerns720',
+      role: 'admin'
+    };
+
+    let state = loadState();
+    let currentUser = null;
+    let selectedEntryId = null;
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && Array.isArray(parsed.users) && Array.isArray(parsed.entries)) {
+            if (!parsed.users.some((u) => u.role === 'admin')) parsed.users.unshift(ADMIN_DEFAULT);
+            return parsed;
+          }
+        }
+      } catch {}
+
+      return {
+        users: [ADMIN_DEFAULT],
+        entries: []
+      };
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function render() {
+      const loginView = document.getElementById('loginView');
+      const appView = document.getElementById('appView');
+
+      if (!currentUser) {
+        loginView.classList.remove('hidden');
+        appView.classList.add('hidden');
+        return;
+      }
+
+      loginView.classList.add('hidden');
+      appView.classList.remove('hidden');
+
+      document.getElementById('welcomeTitle').textContent = `Hallo ${currentUser.displayName}`;
+      document.getElementById('welcomeSub').textContent = currentUser.role === 'admin'
+        ? 'Du kannst Kunden, Freigaben und Einträge komplett verwalten.'
+        : 'Hier findest du alle Zugangsdaten, die dir freigegeben wurden.';
+      document.getElementById('roleBadge').textContent = currentUser.role === 'admin' ? 'Admin' : 'Kunde';
+
+      const isAdmin = currentUser.role === 'admin';
+      document.getElementById('adminContent').classList.toggle('hidden', !isAdmin);
+      document.getElementById('userInfoBox').classList.toggle('hidden', isAdmin);
+
+      renderEntryList();
+      renderEntryDetail();
+      if (isAdmin) {
+        renderCustomerAccessList();
+        renderCustomerList();
+      }
+    }
+
+    function getVisibleEntries() {
+      if (!currentUser) return [];
+      if (currentUser.role === 'admin') return state.entries;
+      return state.entries.filter((entry) => (entry.sharedWith || []).includes(currentUser.id));
+    }
+
+    function renderEntryList() {
+      const container = document.getElementById('entryList');
+      const entries = getVisibleEntries();
+      if (!entries.length) {
+        container.innerHTML = '<div class="muted-box">Noch keine Einträge sichtbar.</div>';
+        selectedEntryId = null;
+        return;
+      }
+
+      if (!entries.some((entry) => entry.id === selectedEntryId)) {
+        selectedEntryId = entries[0].id;
+      }
+
+      container.innerHTML = entries.map((entry) => `
+        <button class="card ${selectedEntryId === entry.id ? 'active' : ''}" onclick="selectEntry('${entry.id}')">
+          <div class="row space">
+            <strong style="text-align:left;">${escapeHtml(entry.title)}</strong>
+            <span class="pill">${entry.sharedWith.length} Freigaben</span>
+          </div>
+          <div class="small" style="text-align:left;">${escapeHtml(entry.usernameOrEmail || 'Kein Login hinterlegt')}</div>
+          <div class="small" style="text-align:left;">${escapeHtml((entry.info || '').slice(0, 80) || 'Keine Zusatzinfos')}</div>
+        </button>
+      `).join('');
+    }
+
+    function renderEntryDetail() {
+      const empty = document.getElementById('entryDetailEmpty');
+      const detail = document.getElementById('entryDetail');
+      const entry = getVisibleEntries().find((item) => item.id === selectedEntryId);
+
+      if (!entry) {
+        empty.classList.remove('hidden');
+        detail.classList.add('hidden');
+        detail.innerHTML = '';
+        return;
+      }
+
+      empty.classList.add('hidden');
+      detail.classList.remove('hidden');
+      detail.innerHTML = `
+        <div class="panel-header">
+          <div>
+            <h3>${escapeHtml(entry.title)}</h3>
+            <p class="small">Freigegeben für ${entry.sharedWith.length} Konto/Konten</p>
+          </div>
+          ${currentUser.role === 'admin' ? `<button class="btn-danger" onclick="deleteEntry('${entry.id}')">Eintrag löschen</button>` : ''}
+        </div>
+
+        <div class="entry-field">
+          <div class="field-title">Benutzername / E-Mail</div>
+          <div class="row space">
+            <div class="field-value">${escapeHtml(entry.usernameOrEmail || '—')}</div>
+            <button class="btn-secondary copy-btn" onclick="copyValue(${JSON.stringify(entry.usernameOrEmail || '')})">Kopieren</button>
+          </div>
+        </div>
+
+        <div class="entry-field">
+          <div class="field-title">Passwort</div>
+          <div class="row space">
+            <div class="field-value">${escapeHtml(entry.password || '—')}</div>
+            <button class="btn-secondary copy-btn" onclick="copyValue(${JSON.stringify(entry.password || '')})">Kopieren</button>
+          </div>
+        </div>
+
+        <div class="entry-field">
+          <div class="field-title">Info</div>
+          <div class="field-value">${escapeHtml(entry.info || 'Keine Zusatzinfos')}</div>
+        </div>
+      `;
+    }
+
+    function renderCustomerAccessList() {
+      const container = document.getElementById('customerAccessList');
+      const customers = state.users.filter((user) => user.role === 'customer');
+      if (!customers.length) {
+        container.innerHTML = '<div class="muted-box">Lege erst ein Kundenkonto an, damit du Freigaben vergeben kannst.</div>';
+        return;
+      }
+
+      container.innerHTML = customers.map((customer) => `
+        <label class="checkbox-item">
+          <input type="checkbox" value="${customer.id}" />
+          <div>
+            <strong>${escapeHtml(customer.displayName)}</strong>
+            <div class="small">${escapeHtml(customer.username)}</div>
+          </div>
+        </label>
+      `).join('');
+    }
+
+    function renderCustomerList() {
+      const container = document.getElementById('customerList');
+      const customers = state.users.filter((user) => user.role === 'customer');
+      if (!customers.length) {
+        container.innerHTML = '<div class="muted-box">Noch keine Kundenkonten angelegt.</div>';
+        return;
+      }
+
+      container.innerHTML = customers.map((customer) => {
+        const visibleCount = state.entries.filter((entry) => (entry.sharedWith || []).includes(customer.id)).length;
+        return `
+          <div class="card">
+            <div class="row space">
+              <div>
+                <strong>${escapeHtml(customer.displayName)}</strong>
+                <div class="small">Login: ${escapeHtml(customer.username)}</div>
+              </div>
+              <button class="btn-danger" onclick="deleteCustomer('${customer.id}')">Löschen</button>
+            </div>
+            <div class="small">Freigegebene Einträge: ${visibleCount}</div>
+            <div class="small">Passwort: ${escapeHtml(customer.password)}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function login() {
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const match = state.users.find((user) => user.username === username && user.password === password);
+      const message = document.getElementById('loginMessage');
+
+      if (!match) {
+        message.textContent = 'Login fehlgeschlagen. Prüfe Benutzername und Passwort.';
+        message.style.color = 'var(--danger)';
+        return;
+      }
+
+      currentUser = match;
+      selectedEntryId = null;
+      document.getElementById('loginPassword').value = '';
+      message.textContent = '';
+      render();
+    }
+
+    function logout() {
+      currentUser = null;
+      selectedEntryId = null;
+      render();
+    }
+
+    function createCustomer() {
+      const displayName = document.getElementById('customerName').value.trim();
+      const username = document.getElementById('customerUsername').value.trim();
+      const password = document.getElementById('customerPassword').value.trim();
+
+      if (!displayName || !username || !password) {
+        alert('Bitte Name, Benutzername und Passwort angeben.');
+        return;
+      }
+
+      if (state.users.some((user) => user.username === username)) {
+        alert('Dieser Benutzername existiert bereits.');
+        return;
+      }
+
+      state.users.push({
+        id: crypto.randomUUID(),
+        displayName,
+        username,
+        password,
+        role: 'customer'
+      });
+
+      saveState();
+      document.getElementById('customerName').value = '';
+      document.getElementById('customerUsername').value = '';
+      document.getElementById('customerPassword').value = '';
+      render();
+    }
+
+    function createEntry() {
+      const title = document.getElementById('entryTitleInput').value.trim();
+      const usernameOrEmail = document.getElementById('entryUsernameInput').value.trim();
+      const password = document.getElementById('entryPasswordInput').value.trim();
+      const info = document.getElementById('entryInfoInput').value.trim();
+      const sharedWith = Array.from(document.querySelectorAll('#customerAccessList input[type="checkbox"]:checked')).map((cb) => cb.value);
+
+      if (!title || !password) {
+        alert('Bitte mindestens Titel und Passwort angeben.');
+        return;
+      }
+
+      const entry = {
+        id: crypto.randomUUID(),
+        title,
+        usernameOrEmail,
+        password,
+        info,
+        sharedWith
+      };
+
+      state.entries.unshift(entry);
+      saveState();
+      document.getElementById('entryTitleInput').value = '';
+      document.getElementById('entryUsernameInput').value = '';
+      document.getElementById('entryPasswordInput').value = '';
+      document.getElementById('entryInfoInput').value = '';
+      document.querySelectorAll('#customerAccessList input[type="checkbox"]').forEach((cb) => cb.checked = false);
+      selectedEntryId = entry.id;
+      render();
+    }
+
+    function deleteEntry(id) {
+      if (!confirm('Eintrag wirklich löschen?')) return;
+      state.entries = state.entries.filter((entry) => entry.id !== id);
+      saveState();
+      if (selectedEntryId === id) selectedEntryId = null;
+      render();
+    }
+
+    function deleteCustomer(id) {
+      if (!confirm('Kundenkonto wirklich löschen?')) return;
+      state.users = state.users.filter((user) => user.id !== id);
+      state.entries = state.entries.map((entry) => ({
+        ...entry,
+        sharedWith: (entry.sharedWith || []).filter((userId) => userId !== id)
+      }));
+      saveState();
+      render();
+    }
+
+    function selectEntry(id) {
+      selectedEntryId = id;
+      renderEntryList();
+      renderEntryDetail();
+    }
+
+    async function copyValue(value) {
+      try {
+        await navigator.clipboard.writeText(value || '');
+        alert('Kopiert');
+      } catch {
+        alert('Konnte nicht kopiert werden.');
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    document.getElementById('loginBtn').addEventListener('click', login);
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+    document.getElementById('createCustomerBtn').addEventListener('click', createCustomer);
+    document.getElementById('createEntryBtn').addEventListener('click', createEntry);
+    document.getElementById('loginPassword').addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') login();
+    });
+
+    window.selectEntry = selectEntry;
+    window.copyValue = copyValue;
+    window.deleteEntry = deleteEntry;
+    window.deleteCustomer = deleteCustomer;
+
+    render();
+  </script>
+</body>
+</html>
