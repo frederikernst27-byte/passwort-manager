@@ -1,95 +1,110 @@
 # VaultDesk
 
-VaultDesk ist jetzt keine reine `localStorage`-Demo mehr, sondern eine einfache Vercel-taugliche App mit:
+VaultDesk ist eine einfache Vercel-App mit echtem Backend:
 
 - statischem Frontend (`index.html`)
-- Vercel Serverless Functions unter `api/*`
-- PostgreSQL (empfohlen: **Neon Free Tier** oder **Vercel Postgres Free**)
+- Vercel Serverless Functions (`api/*`)
+- PostgreSQL-Datenbank
 - serverseitigem Passwort-Hashing mit `bcryptjs`
-- serverseitigen Session-Cookies
-- serverseitiger Verschlüsselung sensibler Vault-Felder per `VAULT_ENCRYPTION_KEY`
+- Session-Cookies
+- serverseitiger Verschlüsselung sensibler Vault-Felder
 
-## Verwendete kostenlose Dienste
+## Jetzt auch sauber für Supabase vorbereitet
 
-Empfohlen und getestet vorbereitet für:
+Die App kann mit **Supabase Postgres** genutzt werden.
 
-1. **Vercel Hobby** – Hosting + Serverless Functions
-2. **Neon Postgres Free Tier** – kostenlose PostgreSQL-Datenbank
+Wichtig:
 
-Alternativ ist auch **Vercel Postgres Free** möglich, solange du eine normale `DATABASE_URL` erhältst.
+- Das hier nutzt **Supabase als Datenbank**
+- **nicht** Supabase Auth
+- Login/Sessions laufen weiter über die eigene Vercel-API der App
 
-## Sicherheitsrahmen (ehrlich, ohne Marketing)
+Das ist für dieses Projekt der einfachste und ehrlichste Weg.
 
-Diese App ist deutlich besser als die alte reine Browser-Demo, aber sie ist **kein Zero-Knowledge-Passwortmanager**.
+## Unterstützte DB-Setups
 
-Was hier sicherheitsseitig passiert:
+- **Supabase Postgres**
+- **Neon Postgres**
+- **Vercel Postgres**
 
-- Benutzerpasswörter werden **nur gehasht**, nicht im Klartext gespeichert.
-- Sessions laufen über **HttpOnly Secure Cookies**.
-- Vault-Felder wie Login, Passwort und Info werden **serverseitig verschlüsselt** in der DB gespeichert.
-- Rechteprüfung passiert **serverseitig** in den API-Routen.
+Die App akzeptiert jetzt:
 
-Grenzen dieser Architektur:
+- `DATABASE_URL` *(empfohlen)*
+- oder `SUPABASE_DB_URL` *(Fallback)*
 
-- Der Server kann Vault-Daten entschlüsseln, weil er den Schlüssel aus `VAULT_ENCRYPTION_KEY` besitzt.
-- Wer Vercel-ENV + Datenbankzugriff zugleich kompromittiert, kann Daten potenziell wiederherstellen.
-- Für ein echtes Ende-zu-Ende-/Zero-Knowledge-Modell bräuchte man eine andere Architektur.
+## Dateien
 
-Für ein kleines, kostenloses, einfach deploybares Tool ist das ein vernünftiger Mittelweg – aber eben kein Hochsicherheitsprodukt.
+- `schema.sql` – allgemeines PostgreSQL-Schema
+- `supabase.sql` – gleiche Tabellen, direkt für Supabase nutzbar
+- `.env.example` – Beispielwerte
+- `lib/db.js` – akzeptiert jetzt auch `SUPABASE_DB_URL`
 
-## ENV-Variablen für Vercel
+## Supabase einrichten
 
-Diese **exakten ENV-Namen** müssen gesetzt werden:
+### 1) Supabase-Projekt erstellen
 
-- `DATABASE_URL`
+In Supabase ein neues Projekt anlegen.
+
+### 2) Datenbank-Connection-String holen
+
+In Supabase unter:
+
+- **Project Settings**
+- **Database**
+- **Connection string**
+
+nimm am besten die normale **URI / Transaction Pooler**-Verbindung mit SSL.
+
+Beispiel:
+
+```env
+DATABASE_URL=postgresql://postgres.xxxxx:PASSWORT@aws-0-eu-central-1.pooler.supabase.com:6543/postgres?sslmode=require
+```
+
+### 3) SQL ausführen
+
+Im **Supabase SQL Editor** den Inhalt aus `supabase.sql` ausführen.
+
+### 4) Vercel ENV setzen
+
+Diese ENV-Namen braucht die App:
+
+- `DATABASE_URL` oder `SUPABASE_DB_URL`
 - `VAULT_ENCRYPTION_KEY`
 - `ADMIN_USERNAME`
 - `ADMIN_PASSWORD`
 - `ADMIN_DISPLAY_NAME` *(optional, aber empfohlen)*
 
-### Beispielwerte
+Beispiel:
 
 ```env
-DATABASE_URL=postgresql://user:password@ep-xxx.eu-central-1.aws.neon.tech/neondb?sslmode=require
-VAULT_ENCRYPTION_KEY=ein-langes-zufaelliges-geheimes-secret-mit-viel-entropie
+DATABASE_URL=postgresql://postgres.xxxxx:PASSWORT@aws-0-eu-central-1.pooler.supabase.com:6543/postgres?sslmode=require
+VAULT_ENCRYPTION_KEY=ein-langes-zufaelliges-geheimes-secret
 ADMIN_USERNAME=admin
-ADMIN_PASSWORD=ein-sehr-starkes-admin-passwort
+ADMIN_PASSWORD=ein-sehr-starkes-passwort
 ADMIN_DISPLAY_NAME=Frederik Admin
 ```
 
-## DB initialisieren
+### 5) Deploy auf Vercel
 
-1. Erstelle eine Neon- oder Vercel-Postgres-Datenbank.
-2. Kopiere deine `DATABASE_URL`.
-3. Führe den Inhalt aus `schema.sql` gegen die Datenbank aus.
+Danach das Projekt normal auf Vercel deployen.
 
-### Mit psql
+## Sicherheitsrahmen
 
-```bash
-psql "$DATABASE_URL" -f schema.sql
-```
+Diese App ist **deutlich besser als eine reine localStorage-Demo**, aber **kein Zero-Knowledge-Passwortmanager**.
 
-### Oder im Neon SQL Editor
+Was passiert:
 
-Einfach den Inhalt von `schema.sql` in den SQL Editor kopieren und ausführen.
+- Nutzerpasswörter werden gehasht gespeichert
+- Session-Cookies sind HttpOnly/Secure
+- Vault-Felder werden serverseitig verschlüsselt gespeichert
+- Rechteprüfung passiert serverseitig
 
-## Wie der Admin-Login gesetzt wird
+Grenze:
 
-Es gibt **keinen hartcodierten Demo-Admin** mehr.
+- Der Server kann Daten entschlüsseln, weil er den Schlüssel kennt
 
-Stattdessen gilt:
-
-- Beim ersten API-Zugriff prüft die App, ob bereits ein Admin existiert.
-- Falls nicht, wird automatisch ein Admin aus diesen ENV-Variablen erzeugt:
-  - `ADMIN_USERNAME`
-  - `ADMIN_PASSWORD`
-  - `ADMIN_DISPLAY_NAME`
-
-Wichtig:
-
-- Der Admin wird nur **einmal initial angelegt**.
-- Änderst du später `ADMIN_PASSWORD`, wird ein bereits existierender Admin **nicht automatisch überschrieben**.
-- Wenn du den ersten Admin ändern willst, musst du ihn in der DB direkt aktualisieren oder neu initialisieren.
+Also: brauchbar und ehrlich für ein kleines Projekt, aber nicht die Sicherheitsklasse von 1Password oder Bitwarden.
 
 ## Lokal entwickeln
 
@@ -98,30 +113,15 @@ npm install
 npm run dev
 ```
 
-Dann lokal z. B. mit Vercel Dev starten.
+## Deployment-Checkliste
 
-## Deployment auf Vercel
-
-### Variante A: über GitHub + Vercel Dashboard
-
-1. Repo zu GitHub pushen
-2. In Vercel ein neues Projekt aus dem Repo anlegen
-3. ENV-Variablen setzen
-4. `schema.sql` in der Datenbank ausführen
-5. Deploy starten
-
-### Variante B: mit Vercel CLI
-
-Falls `vercel` lokal installiert und eingeloggt ist:
-
-```bash
-vercel
-vercel --prod
-```
+1. Supabase-Projekt anlegen
+2. `supabase.sql` ausführen
+3. Vercel ENV setzen
+4. deployen
+5. einmal einloggen, damit der erste Admin angelegt wird
 
 ## API-Routen
-
-Vorhandene Routen:
 
 - `POST /api/login`
 - `GET /api/session`
@@ -133,32 +133,3 @@ Vorhandene Routen:
 - `POST /api/entries`
 - `DELETE /api/entries/:id`
 - `POST /api/entries/:id/shares`
-
-## Projektstruktur
-
-```text
-api/
-  login.js
-  logout.js
-  session.js
-  customers.js
-  customers/[id].js
-  entries.js
-  entries/[id].js
-  entries/[id]/shares.js
-lib/
-  auth.js
-  crypto.js
-  db.js
-  entries.js
-  utils.js
-schema.sql
-vercel.json
-index.html
-```
-
-## Hinweise für Betrieb
-
-- `VAULT_ENCRYPTION_KEY` nach erstem Produktiveinsatz nicht leichtfertig ändern, sonst werden vorhandene verschlüsselte Vault-Felder unlesbar.
-- Nutze ein starkes `ADMIN_PASSWORD`.
-- Für Produktion sollten Neon/Vercel-Logs und Zugriffsrechte sauber abgesichert sein.
