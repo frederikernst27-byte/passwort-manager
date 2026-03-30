@@ -556,7 +556,7 @@
         <div class="panel-header">
           <div>
             <h3>${escapeHtml(entry.title)}</h3>
-            <p class="small">Freigegeben für ${entry.sharedWith.length} Konto/Konten</p>
+            <p class="small">Freigegeben fuer ${(entry.sharedWith || []).length} Konto/Konten</p>
           </div>
           ${currentUser.role === 'admin' ? `
             <div class="row">
@@ -569,7 +569,7 @@
         <div class="entry-field">
           <div class="field-title">Benutzername / E-Mail</div>
           <div class="row space">
-            <div class="field-value">${escapeHtml(entry.usernameOrEmail || '—')}</div>
+            <div class="field-value">${escapeHtml(entry.usernameOrEmail || 'Nicht hinterlegt')}</div>
             <button class="btn-secondary copy-btn" onclick="copyValue(${JSON.stringify(entry.usernameOrEmail || '')})">Kopieren</button>
           </div>
         </div>
@@ -577,7 +577,7 @@
         <div class="entry-field">
           <div class="field-title">Passwort</div>
           <div class="row space">
-            <div class="field-value">${escapeHtml(entry.password || '—')}</div>
+            <div class="field-value">${escapeHtml(entry.password || 'Nicht hinterlegt')}</div>
             <button class="btn-secondary copy-btn" onclick="copyValue(${JSON.stringify(entry.password || '')})">Kopieren</button>
           </div>
         </div>
@@ -586,12 +586,12 @@
           <div class="field-title">Info</div>
           <div class="field-value">${escapeHtml(entry.info || 'Keine Zusatzinfos')}</div>
         </div>
+
       `;
     }
 
     function renderCustomerList() {
       const container = document.getElementById('customerList');
-      const customers = state.users.filter((user) => user.role === 'customer');
       if (!customers.length) {
         container.innerHTML = '<div class="muted-box">Noch keine Kundenkonten angelegt.</div>';
         return;
@@ -618,7 +618,6 @@
     function openShareModal(entryId) {
       shareTargetEntryId = entryId;
       const entry = state.entries.find((item) => item.id === entryId);
-      const customers = state.users.filter((user) => user.role === 'customer');
       const list = document.getElementById('shareModalList');
 
       if (!customers.length) {
@@ -738,6 +737,16 @@
       render();
     }
 
+    function updateEntrySharing(id) {
+      const entry = state.entries.find((item) => item.id === id);
+      if (!entry) return;
+      const selectedUsers = Array.from(document.querySelectorAll('#entryShareList input[type="checkbox"]:checked')).map((cb) => cb.value);
+      entry.sharedWith = selectedUsers;
+      saveState();
+      render();
+      alert('Freigaben gespeichert.');
+    }
+
     function deleteEntry(id) {
       if (!confirm('Eintrag wirklich löschen?')) return;
       state.entries = state.entries.filter((entry) => entry.id !== id);
@@ -801,6 +810,9 @@
     document.getElementById('logoutBtn').addEventListener('click', logout);
     document.getElementById('createCustomerBtn').addEventListener('click', createCustomer);
     document.getElementById('createEntryBtn').addEventListener('click', createEntry);
+    document.getElementById('loginUsername').addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') login();
+    });
     document.getElementById('loginPassword').addEventListener('keydown', (event) => {
       if (event.key === 'Enter') login();
     });
