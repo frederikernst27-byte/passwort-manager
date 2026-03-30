@@ -29,8 +29,8 @@ Das ist für dieses Projekt der einfachste und ehrlichste Weg.
 
 Die App akzeptiert jetzt:
 
-- `DATABASE_URL` *(empfohlen)*
-- oder `SUPABASE_DB_URL` *(Fallback)*
+- `SUPABASE_DB_URL` *(empfohlen)*
+- oder `DATABASE_URL` *(optional als Alias)*
 
 ## Dateien
 
@@ -60,7 +60,7 @@ nimm am besten die normale **URI / Transaction Pooler**-Verbindung mit SSL.
 Beispiel:
 
 ```env
-DATABASE_URL=postgresql://postgres.xxxxx:PASSWORT@aws-0-eu-central-1.pooler.supabase.com:6543/postgres?sslmode=require
+SUPABASE_DB_URL=postgresql://postgres.xxxxx:PASSWORT@aws-0-eu-central-1.pooler.supabase.com:6543/postgres?sslmode=require
 ```
 
 ### 3) SQL ausführen
@@ -71,16 +71,18 @@ Im **Supabase SQL Editor** den Inhalt aus `supabase.sql` ausführen.
 
 Diese ENV-Namen braucht die App:
 
-- `DATABASE_URL` oder `SUPABASE_DB_URL`
+- `SUPABASE_DB_URL` *(empfohlen)*
 - `VAULT_ENCRYPTION_KEY`
 - `ADMIN_USERNAME`
 - `ADMIN_PASSWORD`
 - `ADMIN_DISPLAY_NAME` *(optional, aber empfohlen)*
 
+Das ist beim Passwortmanager das sichere Gegenstück zu einer `config.js`: Die Werte liegen **serverseitig** in Vercel ENV oder lokal in `.env`, nicht öffentlich im Browser.
+
 Beispiel:
 
 ```env
-DATABASE_URL=postgresql://postgres.xxxxx:PASSWORT@aws-0-eu-central-1.pooler.supabase.com:6543/postgres?sslmode=require
+SUPABASE_DB_URL=postgresql://postgres.xxxxx:PASSWORT@aws-0-eu-central-1.pooler.supabase.com:6543/postgres?sslmode=require
 VAULT_ENCRYPTION_KEY=ein-langes-zufaelliges-geheimes-secret
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=ein-sehr-starkes-passwort
@@ -119,7 +121,7 @@ npm run dev
 
 1. Supabase-Projekt anlegen oder vorhandenes Journal/GymOS-Projekt weiterverwenden
 2. `supabase.sql` ausführen
-3. Vercel ENV setzen
+3. in Vercel diese ENV setzen: `SUPABASE_DB_URL`, `VAULT_ENCRYPTION_KEY`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`, optional `ADMIN_DISPLAY_NAME`
 4. deployen
 5. einmal einloggen, damit der erste Admin angelegt wird
 
