@@ -134,11 +134,6 @@
       border: 1px solid rgba(251,113,133,0.2);
     }
 
-    .btn-success {
-      color: #04110d;
-      background: var(--success);
-    }
-
     .app-wrap {
       padding: 18px;
     }
@@ -162,7 +157,7 @@
 
     .layout {
       display: grid;
-      grid-template-columns: 320px 1fr 360px;
+      grid-template-columns: 320px 1fr 390px;
       gap: 18px;
       align-items: start;
     }
@@ -251,7 +246,7 @@
       line-height: 1.6;
     }
 
-    .copy-btn {
+    .copy-btn, .share-btn, .edit-btn {
       padding: 8px 10px;
       font-size: 0.85rem;
     }
@@ -284,6 +279,27 @@
       font-size: 0.92rem;
     }
 
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.72);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 50;
+    }
+
+    .modal {
+      width: min(560px, 100%);
+      background: #101729;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
     @media (max-width: 1120px) {
       .layout {
         grid-template-columns: 1fr;
@@ -302,7 +318,7 @@
         </div>
       </div>
 
-      <p class="sub">Als Admin kannst du Kundenkonten anlegen, Einträge erstellen und gezielt freigeben. Kunden sehen danach nur die Einträge, die du ihnen zuweist.</p>
+      <p class="sub">Als Admin kannst du Kundenkonten anlegen, Einträge erstellen und später separat freigeben. Kunden sehen danach nur die Einträge, die du ihnen zuweist.</p>
 
       <div class="form">
         <div>
@@ -351,7 +367,7 @@
             <div class="panel-header">
               <div>
                 <h3>Admin Bereich</h3>
-                <p class="small">Kunden anlegen, Einträge erstellen und Freigaben steuern</p>
+                <p class="small">Kunden anlegen, Einträge erstellen und Freigaben später separat verwalten</p>
               </div>
             </div>
 
@@ -392,10 +408,6 @@
                 <label>Kleiner Info-Text</label>
                 <textarea id="entryInfoInput" placeholder="z. B. nur im Browser nutzen, 2FA im Handy etc."></textarea>
               </div>
-              <div>
-                <label>Für welche Konten sichtbar?</label>
-                <div id="customerAccessList" class="checkbox-list"></div>
-              </div>
               <button class="btn-primary" id="createEntryBtn">Eintrag speichern</button>
             </div>
 
@@ -415,8 +427,24 @@
     </section>
   </div>
 
+  <div id="shareModal" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="panel-header">
+        <div>
+          <h3>Freigeben</h3>
+          <p class="small">Wähle aus, für welche Kunden dieser Eintrag sichtbar sein soll.</p>
+        </div>
+        <button class="btn-secondary" id="closeShareModal">Schließen</button>
+      </div>
+      <div id="shareModalList" class="checkbox-list"></div>
+      <div class="row" style="margin-top:16px; justify-content:flex-end;">
+        <button class="btn-primary" id="saveShareBtn">Freigaben speichern</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    const STORAGE_KEY = 'vaultdesk-data-v1';
+    const STORAGE_KEY = 'vaultdesk-data-v2';
     const ADMIN_DEFAULT = {
       id: 'admin-1',
       username: 'admin',
@@ -428,14 +456,16 @@
     let state = loadState();
     let currentUser = null;
     let selectedEntryId = null;
+    let shareTargetEntryId = null;
 
     function loadState() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('vaultdesk-data-v1');
         if (raw) {
           const parsed = JSON.parse(raw);
           if (parsed && Array.isArray(parsed.users) && Array.isArray(parsed.entries)) {
             if (!parsed.users.some((u) => u.role === 'admin')) parsed.users.unshift(ADMIN_DEFAULT);
+            parsed.entries = parsed.entries.map((entry) => ({ ...entry, sharedWith: Array.isArray(entry.sharedWith) ? entry.sharedWith : [] }));
             return parsed;
           }
         }
@@ -466,7 +496,7 @@
 
       document.getElementById('welcomeTitle').textContent = `Hallo ${currentUser.displayName}`;
       document.getElementById('welcomeSub').textContent = currentUser.role === 'admin'
-        ? 'Du kannst Kunden, Freigaben und Einträge komplett verwalten.'
+        ? 'Du kannst Kunden, Einträge und Freigaben getrennt verwalten.'
         : 'Hier findest du alle Zugangsdaten, die dir freigegeben wurden.';
       document.getElementById('roleBadge').textContent = currentUser.role === 'admin' ? 'Admin' : 'Kunde';
 
@@ -476,10 +506,7 @@
 
       renderEntryList();
       renderEntryDetail();
-      if (isAdmin) {
-        renderCustomerAccessList();
-        renderCustomerList();
-      }
+      if (isAdmin) renderCustomerList();
     }
 
     function getVisibleEntries() {
@@ -497,9 +524,7 @@
         return;
       }
 
-      if (!entries.some((entry) => entry.id === selectedEntryId)) {
-        selectedEntryId = entries[0].id;
-      }
+      if (!entries.some((entry) => entry.id === selectedEntryId)) selectedEntryId = entries[0].id;
 
       container.innerHTML = entries.map((entry) => `
         <button class="card ${selectedEntryId === entry.id ? 'active' : ''}" onclick="selectEntry('${entry.id}')">
@@ -533,7 +558,12 @@
             <h3>${escapeHtml(entry.title)}</h3>
             <p class="small">Freigegeben für ${entry.sharedWith.length} Konto/Konten</p>
           </div>
-          ${currentUser.role === 'admin' ? `<button class="btn-danger" onclick="deleteEntry('${entry.id}')">Eintrag löschen</button>` : ''}
+          ${currentUser.role === 'admin' ? `
+            <div class="row">
+              <button class="btn-secondary share-btn" onclick="openShareModal('${entry.id}')">Freigeben</button>
+              <button class="btn-danger" onclick="deleteEntry('${entry.id}')">Eintrag löschen</button>
+            </div>
+          ` : ''}
         </div>
 
         <div class="entry-field">
@@ -557,25 +587,6 @@
           <div class="field-value">${escapeHtml(entry.info || 'Keine Zusatzinfos')}</div>
         </div>
       `;
-    }
-
-    function renderCustomerAccessList() {
-      const container = document.getElementById('customerAccessList');
-      const customers = state.users.filter((user) => user.role === 'customer');
-      if (!customers.length) {
-        container.innerHTML = '<div class="muted-box">Lege erst ein Kundenkonto an, damit du Freigaben vergeben kannst.</div>';
-        return;
-      }
-
-      container.innerHTML = customers.map((customer) => `
-        <label class="checkbox-item">
-          <input type="checkbox" value="${customer.id}" />
-          <div>
-            <strong>${escapeHtml(customer.displayName)}</strong>
-            <div class="small">${escapeHtml(customer.username)}</div>
-          </div>
-        </label>
-      `).join('');
     }
 
     function renderCustomerList() {
@@ -602,6 +613,44 @@
           </div>
         `;
       }).join('');
+    }
+
+    function openShareModal(entryId) {
+      shareTargetEntryId = entryId;
+      const entry = state.entries.find((item) => item.id === entryId);
+      const customers = state.users.filter((user) => user.role === 'customer');
+      const list = document.getElementById('shareModalList');
+
+      if (!customers.length) {
+        list.innerHTML = '<div class="muted-box">Du hast noch keine Kunden angelegt.</div>';
+      } else {
+        list.innerHTML = customers.map((customer) => `
+          <label class="checkbox-item">
+            <input type="checkbox" value="${customer.id}" ${entry.sharedWith.includes(customer.id) ? 'checked' : ''} />
+            <div>
+              <strong>${escapeHtml(customer.displayName)}</strong>
+              <div class="small">${escapeHtml(customer.username)}</div>
+            </div>
+          </label>
+        `).join('');
+      }
+
+      document.getElementById('shareModal').classList.remove('hidden');
+    }
+
+    function closeShareModal() {
+      shareTargetEntryId = null;
+      document.getElementById('shareModal').classList.add('hidden');
+    }
+
+    function saveShareModal() {
+      if (!shareTargetEntryId) return;
+      const entry = state.entries.find((item) => item.id === shareTargetEntryId);
+      if (!entry) return;
+      entry.sharedWith = Array.from(document.querySelectorAll('#shareModalList input[type="checkbox"]:checked')).map((cb) => cb.value);
+      saveState();
+      closeShareModal();
+      render();
     }
 
     function login() {
@@ -664,7 +713,6 @@
       const usernameOrEmail = document.getElementById('entryUsernameInput').value.trim();
       const password = document.getElementById('entryPasswordInput').value.trim();
       const info = document.getElementById('entryInfoInput').value.trim();
-      const sharedWith = Array.from(document.querySelectorAll('#customerAccessList input[type="checkbox"]:checked')).map((cb) => cb.value);
 
       if (!title || !password) {
         alert('Bitte mindestens Titel und Passwort angeben.');
@@ -677,7 +725,7 @@
         usernameOrEmail,
         password,
         info,
-        sharedWith
+        sharedWith: []
       };
 
       state.entries.unshift(entry);
@@ -686,7 +734,6 @@
       document.getElementById('entryUsernameInput').value = '';
       document.getElementById('entryPasswordInput').value = '';
       document.getElementById('entryInfoInput').value = '';
-      document.querySelectorAll('#customerAccessList input[type="checkbox"]').forEach((cb) => cb.checked = false);
       selectedEntryId = entry.id;
       render();
     }
@@ -741,11 +788,14 @@
     document.getElementById('loginPassword').addEventListener('keydown', (event) => {
       if (event.key === 'Enter') login();
     });
+    document.getElementById('closeShareModal').addEventListener('click', closeShareModal);
+    document.getElementById('saveShareBtn').addEventListener('click', saveShareModal);
 
     window.selectEntry = selectEntry;
     window.copyValue = copyValue;
     window.deleteEntry = deleteEntry;
     window.deleteCustomer = deleteCustomer;
+    window.openShareModal = openShareModal;
 
     render();
   </script>
